@@ -3,67 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Toko Sembako ARNOF | Project Repository</title>
+    <title>Toko Sembako ARNOF | Dashboard Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-gradient-start: #f0f4f8;
+            --bg-gradient-end: #d9e2ec;
+            --primary-color: #3b82f6;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --glass-blur: blur(12px);
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            color: #1e293b;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--glass-border);
+            padding: 2rem 1rem;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            position: fixed;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo-box {
+            background: var(--primary-color);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .container {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            max-width: 600px;
-        }
-        h1 {
-            color: #3b82f6;
-            margin-bottom: 0.5rem;
-        }
-        p {
-            line-height: 1.6;
-            color: #64748b;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 1.5rem;
-            padding: 0.8rem 2rem;
-            background-color: #3b82f6;
             color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            color: var(--text-dark);
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
             text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
+            color: var(--text-light);
+            font-weight: 500;
+            border-radius: var(--radius-md);
             transition: 0.3s;
         }
-        .btn:hover {
-            background-color: #2563eb;
-            transform: translateY(-2px);
+
+        .nav-item.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
         }
-        .footer {
-            margin-top: 2rem;
-            font-size: 0.85rem;
-            color: #94a3b8;
+
+        .logout-btn {
+            margin-top: auto;
+            background: #ef4444;
+            color: white;
+            padding: 0.8rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem 3rem;
+            width: 100%;
+        }
+
+        .header-title {
+            margin-bottom: 2rem;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: var(--text-light);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-icon {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Activities Section */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .panel-title {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .activity-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .activity-icon {
+            width: 35px;
+            height: 35px;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .activity-text div {
+            font-weight: 600;
+        }
+
+        .activity-text span {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .activity-price {
+            font-weight: 700;
+        }
+
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Toko Sembako ARNOF</h1>
-        <p>Selamat datang di repositori proyek <strong>Manajemen Toko Sembako</strong>.</p>
-        <p>Aplikasi ini dibangun menggunakan stack modern: <strong>React, Node.js, Express, dan Prisma</strong>.</p>
-        <p>Catatan: Halaman ini adalah landing page statis. Untuk menjalankan aplikasi secara penuh (termasuk Backend & Database), silakan ikuti panduan instalasi di file README.md.</p>
-        <a href="https://github.com/arnofinformatika-bit/toko-sembako-arnof" class="btn">Lihat Source Code di GitHub</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box">☰</div>
+            <div class="logo-text">
+                TokoSembako
+                <span>ARNOF DWI FERDIZA</span>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-item active">📊 Dashboard</a>
+            <a href="#" class="nav-item">📦 Barang</a>
+            <a href="#" class="nav-item">🏷️ Kategori</a>
+            <a href="#" class="nav-item">🛒 Transaksi</a>
+        </div>
+        <a href="#" class="logout-btn">Logout</a>
     </div>
-    <div class="footer">
-        Dibuat oleh ARNOF DWI FERDIZA
+
+    <div class="main-content">
+        <div class="header-title">
+            <h1>Dashboard Overview</h1>
+            <p>Selamat datang kembali, Kasir!</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Barang</h3>
+                <div class="value">124</div>
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">📦</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Kategori</h3>
+                <div class="value">12</div>
+                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">🏷️</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Transaksi</h3>
+                <div class="value">85</div>
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">🛒</div>
+            </div>
+            <div class="stat-card">
+                <h3>Pendapatan Hari Ini</h3>
+                <div class="value" style="font-size: 1.6rem; margin-top: 0.5rem;">Rp 4.500.000</div>
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">📈</div>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <div class="panel-title">Aktivitas Terbaru</div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <div class="activity-icon">🛍️</div>
+                    <div class="activity-text">
+                        <div>Transaksi #TRX-001</div>
+                        <span>Beberapa menit yang lalu</span>
+                    </div>
+                </div>
+                <div class="activity-price">Rp 150.000</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <div class="activity-icon">🛍️</div>
+                    <div class="activity-text">
+                        <div>Transaksi #TRX-002</div>
+                        <span>Beberapa menit yang lalu</span>
+                    </div>
+                </div>
+                <div class="activity-price">Rp 150.000</div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-info">
+                    <div class="activity-icon">🛍️</div>
+                    <div class="activity-text">
+                        <div>Transaksi #TRX-003</div>
+                        <span>Beberapa menit yang lalu</span>
+                    </div>
+                </div>
+                <div class="activity-price">Rp 150.000</div>
+            </div>
+        </div>
+        
+        <p style="margin-top: 2rem; color: var(--text-light); text-align: center; font-size: 0.9rem;">
+            Catatan: Ini adalah pratinjau statis untuk GitHub Pages. <br>
+            Aplikasi lengkap (React + Node.js) tersedia di folder <code>/frontend</code>.
+        </p>
     </div>
 </body>
 </html>
