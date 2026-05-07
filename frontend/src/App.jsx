@@ -1,105 +1,69 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Barang from './pages/Barang';
 import Kategori from './pages/Kategori';
 import Transaksi from './pages/Transaksi';
-import Login from './pages/Login';
-import User from './pages/User';
-
-import { Menu, X } from 'lucide-react';
-
-function Layout({ children }) {
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
-  const [isMobileOpen, setIsMobileOpen] = React.useState(false);
-
-  return (
-    <div className="app-container">
-      {/* Mobile Nav Toggle */}
-      <button 
-        className="nav-toggle"
-        onClick={() => setIsMobileOpen(true)}
-      >
-        <Menu size={24} />
-      </button>
-
-      {/* Mobile Overlay */}
-      <div 
-        className={`sidebar-overlay ${isMobileOpen ? 'active' : ''}`}
-        onClick={() => setIsMobileOpen(false)}
-      />
-
-      <Sidebar 
-        isCollapsed={isCollapsed} 
-        setIsCollapsed={setIsCollapsed}
-        isMobileOpen={isMobileOpen}
-        setIsMobileOpen={setIsMobileOpen}
-      />
-      
-      <main className={`main-content animate-fade-in ${isCollapsed ? 'collapsed' : ''}`}>
-        {children}
-      </main>
-    </div>
-  );
-}
-
-const ProtectedRoute = ({ children, requiredRole }) => {
-  const userString = localStorage.getItem('user');
-  
-  if (!userString) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (requiredRole) {
-    const user = JSON.parse(userString);
-    if (user.role !== requiredRole) {
-      return <Navigate to="/" replace />;
-    }
-  }
-
-  return children;
-};
+import { Menu } from 'lucide-react';
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (!mobile) setIsSidebarOpen(false);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // Mock user untuk keperluan sistem (id tetap 1 agar transaksi lancar)
+  const mockUser = { id: 1, username: 'admin', role: 'ADMIN' };
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        <Route path="/" element={
-          <ProtectedRoute>
-            <Layout><Dashboard /></Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/barang" element={
-          <ProtectedRoute>
-            <Layout><Barang /></Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/kategori" element={
-          <ProtectedRoute>
-            <Layout><Kategori /></Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/transaksi" element={
-          <ProtectedRoute>
-            <Layout><Transaksi /></Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="/user" element={
-          <ProtectedRoute requiredRole="ADMIN">
-            <Layout><User /></Layout>
-          </ProtectedRoute>
-        } />
-        
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <div className="app-container">
+        {/* Mobile Toggle Button */}
+        {isMobile && (
+          <button className="nav-toggle" onClick={toggleSidebar}>
+            <Menu size={24} />
+          </button>
+        )}
+
+        {/* Sidebar Overlay for Mobile */}
+        {isMobile && isSidebarOpen && (
+          <div className="sidebar-overlay active" onClick={toggleSidebar}></div>
+        )}
+
+        {/* Sidebar */}
+        <Sidebar 
+          isOpen={isSidebarOpen} 
+          isMobile={isMobile} 
+          toggleSidebar={toggleSidebar}
+          user={mockUser}
+        />
+
+        {/* Main Content */}
+        <main className={`main-content ${isMobile ? 'mobile' : ''}`}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/barang" element={<Barang />} />
+            <Route path="/kategori" element={<Kategori />} />
+            <Route path="/transaksi" element={<Transaksi />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   );
 }
 
