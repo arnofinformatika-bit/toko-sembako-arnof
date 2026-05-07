@@ -16,29 +16,16 @@
   ],
   "routes": [
     {
-      "src": "/user/(.*)",
-      "dest": "index.js"
-    },
-    {
-      "src": "/barang/(.*)",
-      "dest": "index.js"
-    },
-    {
-      "src": "/kategori/(.*)",
-      "dest": "index.js"
-    },
-    {
-      "src": "/transaksi/(.*)",
-      "dest": "index.js"
-    },
-    {
       "src": "/api/(.*)",
       "dest": "index.js"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "frontend/assets/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "frontend/$1",
-      "check": true
+      "dest": "frontend/index.html"
     }
   ]
 }

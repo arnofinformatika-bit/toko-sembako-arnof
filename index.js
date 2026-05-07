@@ -9,16 +9,21 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send("Toko Sembako API is running!")
 })
 
-app.use('/user', UserRoute)
-app.use('/kategori', KategoriRoute)
-app.use('/barang', BarangRoute)
-app.use('/transaksi', TransaksiRoute)
+// Tambahkan prefix /api untuk semua rute backend
+app.use('/api/user', UserRoute)
+app.use('/api/kategori', KategoriRoute)
+app.use('/api/barang', BarangRoute)
+app.use('/api/transaksi', TransaksiRoute)
 
-// Port listening for local development
+// Fallback untuk route yang tidak ditemukan
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ message: "API Route not found" })
+})
+
 if (process.env.NODE_ENV !== 'production') {
     app.listen(3000, () => {
         console.log('Server started on port 3000')

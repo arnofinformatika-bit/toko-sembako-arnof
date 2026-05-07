@@ -1,7 +1,10 @@
-export const API_URL = 'http://localhost:3000';
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const fetchAPI = async (endpoint, options = {}) => {
-  const url = `${API_URL}${endpoint}`;
+  // Jika endpoint tidak diawali dengan /, tambahkan /
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${API_URL}${path}`;
+  
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
