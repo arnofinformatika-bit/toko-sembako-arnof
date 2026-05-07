@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko Sembako ARNOF | Dashboard Full-Stack</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --bg-gradient-start: #f0f4f8;
@@ -36,328 +38,229 @@
             overflow-x: hidden;
         }
 
-        /* Loading Overlay */
         #loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--white);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--primary-color);
-            transition: opacity 0.5s;
+            position: fixed; inset: 0; background: var(--white); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-weight: 700; color: var(--primary-color); transition: opacity 0.5s;
         }
 
-        /* Sidebar */
         .sidebar {
-            width: 280px;
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            border-right: 1px solid var(--glass-border);
-            padding: 2rem 1rem;
-            display: none; /* Hidden by default for login */
-            flex-direction: column;
-            height: 100vh;
-            position: fixed;
-            transition: var(--transition);
-            z-index: 100;
+            width: 280px; background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+            border-right: 1px solid var(--glass-border); padding: 2rem 1rem;
+            display: none; flex-direction: column; height: 100vh; position: fixed;
+            transition: var(--transition); z-index: 100;
         }
 
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 2.5rem;
-        }
-
+        .sidebar-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; }
         .logo-box {
-            background: var(--primary-color);
-            width: 45px;
-            height: 45px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.4rem;
+            background: var(--primary-color); width: 45px; height: 45px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center; color: white;
         }
 
-        .logo-text {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            line-height: 1.2;
-        }
-
-        .logo-text span {
-            color: var(--text-dark);
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+        .logo-text { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); line-height: 1.2; }
+        .logo-text span { color: var(--text-dark); display: block; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; }
 
         .nav-links { display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem 1.2rem;
-            text-decoration: none;
-            color: var(--text-light);
-            font-weight: 500;
-            border-radius: var(--radius-md);
-            transition: 0.3s;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1.2rem;
+            text-decoration: none; color: var(--text-light); font-weight: 500;
+            border-radius: var(--radius-md); transition: 0.3s; cursor: pointer;
         }
-
-        .nav-item.active {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
-        }
-
+        .nav-item.active { background: var(--primary-color); color: white; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3); }
         .nav-item:hover:not(.active) { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
 
         .btn-logout {
-            margin-top: auto;
-            background: var(--danger);
-            color: white;
-            padding: 0.8rem;
-            border-radius: var(--radius-md);
-            text-align: center;
-            text-decoration: none;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
+            margin-top: auto; background: var(--danger); color: white; padding: 0.8rem;
+            border-radius: var(--radius-md); text-align: center; font-weight: 600; border: none;
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
-
         .btn-logout:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            padding: 2.5rem 3.5rem;
-            width: 100%;
-            display: none; /* Hidden by default */
-            min-height: 100vh;
-        }
+        .main-content { margin-left: 280px; padding: 2.5rem 3.5rem; width: 100%; display: none; min-height: 100vh; }
 
-        /* Login Screen */
-        .login-container {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
+        .login-container { width: 100%; display: flex; align-items: center; justify-content: center; height: 100vh; }
         .login-card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            padding: 3rem;
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 420px;
-            box-shadow: var(--glass-shadow);
-            border: 1px solid var(--glass-border);
-            text-align: center;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); padding: 3rem;
+            border-radius: var(--radius-lg); width: 100%; max-width: 420px;
+            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border); text-align: center;
         }
 
         .input-group { text-align: left; margin-bottom: 1.5rem; }
         .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
         .input-field {
-            width: 100%;
-            padding: 0.8rem 1.2rem;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(0,0,0,0.1);
-            background: rgba(255,255,255,0.8);
-            font-family: inherit;
-            font-size: 1rem;
-            transition: 0.3s;
+            width: 100%; padding: 0.8rem 1.2rem; border-radius: var(--radius-md);
+            border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.8);
+            font-family: inherit; font-size: 1rem; transition: 0.3s;
         }
         .input-field:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
 
         .btn-primary {
-            width: 100%;
-            padding: 0.9rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 1rem;
+            width: 100%; padding: 0.9rem; background: var(--primary-color); color: white;
+            border: none; border-radius: var(--radius-md); font-weight: 700; cursor: pointer;
+            transition: 0.3s; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
         .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
 
-        /* Dashboard UI */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
-        .page-title h1 { font-size: 2.2rem; font-weight: 700; }
+        .page-title h1 { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); }
         .page-title p { color: var(--text-light); }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
         .stat-card {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            padding: 1.8rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--glass-shadow);
-            border: 1px solid var(--glass-border);
-            position: relative;
-            transition: 0.3s;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); padding: 1.8rem;
+            border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
+            position: relative; transition: 0.3s;
         }
         .stat-card:hover { transform: translateY(-5px); }
         .stat-card h3 { font-size: 0.95rem; color: var(--text-light); font-weight: 500; margin-bottom: 0.8rem; }
         .stat-card .value { font-size: 2.2rem; font-weight: 700; color: var(--primary-color); }
-        .stat-icon { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.5rem; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .stat-icon { position: absolute; top: 1.5rem; right: 1.5rem; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* Tables */
         .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--glass-shadow);
-            overflow: hidden;
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); padding: 2rem; box-shadow: var(--glass-shadow); overflow: hidden;
         }
 
         table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { padding: 1.2rem; border-bottom: 2px solid rgba(0,0,0,0.05); color: var(--text-light); font-weight: 600; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
-        td { padding: 1.2rem; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        th { padding: 1.2rem; border-bottom: 2px solid rgba(0,0,0,0.05); color: var(--text-light); font-weight: 600; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+        td { padding: 1.2rem; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
         tr:hover { background: rgba(255,255,255,0.4); }
 
-        /* Buttons */
-        .btn-add { padding: 0.6rem 1.2rem; background: var(--primary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-        .btn-action { padding: 0.5rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-right: 0.3rem; }
+        .btn-add { padding: 0.7rem 1.4rem; background: var(--primary-color); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
+        .btn-action { padding: 0.6rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-right: 0.3rem; display: inline-flex; align-items: center; justify-content: center; }
         .btn-edit { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
         .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .btn-action:hover { transform: scale(1.1); }
 
-        /* Transaksi / POS */
         .pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.2rem; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
         .product-card {
-            background: var(--white);
-            padding: 1.2rem;
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(0,0,0,0.05);
-            cursor: pointer;
-            transition: 0.3s;
+            background: var(--white); padding: 1.5rem; border-radius: var(--radius-md);
+            border: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 0.5rem;
         }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .product-card h4 { margin-bottom: 0.5rem; font-size: 1.1rem; }
-        .product-card .price { font-weight: 700; color: var(--primary-color); }
-        .product-card .stock { font-size: 0.8rem; color: var(--text-light); margin-top: 0.5rem; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--primary-color); }
+        .product-card h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+        .product-card .price { font-weight: 700; color: var(--primary-color); font-size: 1.2rem; }
+        .product-card .stock { font-size: 0.8rem; background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; align-self: flex-start; }
 
-        .cart-panel { background: var(--white); padding: 1.5rem; border-radius: var(--radius-lg); position: sticky; top: 2rem; }
-        .cart-item { display: flex; justify-content: space-between; padding: 0.8rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .cart-total { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed rgba(0,0,0,0.1); display: flex; justify-content: space-between; font-weight: 700; font-size: 1.3rem; }
+        .cart-panel { background: var(--white); padding: 2rem; border-radius: var(--radius-lg); position: sticky; top: 2rem; height: fit-content; }
+        .cart-item { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .cart-total { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed rgba(0,0,0,0.1); display: flex; justify-content: space-between; font-weight: 700; font-size: 1.5rem; color: var(--primary-color); }
 
-        /* Modal */
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
-            display: none; align-items: center; justify-content: center; z-index: 1000;
-        }
-        .modal-content {
-            background: var(--white); padding: 2.5rem; border-radius: var(--radius-lg);
-            width: 100%; max-width: 500px; animation: slideUp 0.4s ease;
-        }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: var(--white); padding: 3rem; border-radius: var(--radius-lg); width: 100%; max-width: 500px; animation: slideUp 0.4s ease-out; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Animations */
-        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .api-settings { position: fixed; bottom: 1rem; right: 1rem; z-index: 1000; }
+        .btn-settings { width: 35px; height: 35px; border-radius: 50%; background: var(--white); border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-light); }
     </style>
 </head>
 <body>
-    <div id="loading-overlay">Memuat Aplikasi...</div>
+    <div id="loading-overlay">
+        <i data-lucide="loader-2" style="width: 40px; height: 40px; animation: spin 2s linear infinite;"></i>
+        <p style="margin-top: 1rem;">Menghubungkan ke Toko...</p>
+    </div>
+
+    <style>@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
 
     <!-- LOGIN PAGE -->
     <div id="login-page" class="login-container fade-in">
         <div class="login-card">
-            <div class="logo-box" style="margin: 0 auto 1.5rem;">☰</div>
+            <div class="logo-box" style="margin: 0 auto 1.5rem;">
+                <i data-lucide="store" style="color: white; width: 24px; height: 24px;"></i>
+            </div>
             <h2 style="margin-bottom: 0.5rem;">Selamat Datang</h2>
-            <p style="color: var(--text-light); margin-bottom: 2.5rem;">Masuk ke Toko Sembako ARNOF</p>
+            <p style="color: var(--text-light); margin-bottom: 2.5rem;">Akses Panel Manajemen ARNOF</p>
             <form id="login-form">
                 <div class="input-group">
                     <label>Username</label>
-                    <input type="text" id="login-username" class="input-field" placeholder="Masukkan username" required>
+                    <input type="text" id="login-username" class="input-field" placeholder="Username" required>
                 </div>
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="login-password" class="input-field" placeholder="Masukkan password" required>
+                    <input type="password" id="login-password" class="input-field" placeholder="Password" required>
                 </div>
-                <button type="submit" class="btn-primary">Masuk Sekarang</button>
+                <button type="submit" class="btn-primary">
+                    <i data-lucide="log-in" style="width: 18px; height: 18px;"></i> Masuk Sekarang
+                </button>
             </form>
-            <p id="login-error" style="color: var(--danger); margin-top: 1rem; font-size: 0.9rem; display: none;"></p>
+            <p id="login-error" style="color: var(--danger); margin-top: 1.5rem; font-size: 0.85rem; padding: 0.8rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px; display: none;"></p>
         </div>
     </div>
 
     <!-- SIDEBAR -->
     <aside id="app-sidebar" class="sidebar">
         <div class="sidebar-header">
-            <div class="logo-box">☰</div>
+            <div class="logo-box">
+                <i data-lucide="layout-grid" style="color: white; width: 24px; height: 24px;"></i>
+            </div>
             <div class="logo-text">
                 TokoSembako
                 <span id="user-display-name">ARNOF DWI FERDIZA</span>
             </div>
         </div>
         <nav class="nav-links">
-            <div class="nav-item active" onclick="switchPage('dashboard')">📊 Dashboard</div>
-            <div class="nav-item" onclick="switchPage('barang')">📦 Barang</div>
-            <div class="nav-item" onclick="switchPage('kategori')">🏷️ Kategori</div>
-            <div class="nav-item" onclick="switchPage('transaksi')">🛒 Transaksi</div>
+            <div class="nav-item active" onclick="switchPage('dashboard')">
+                <i data-lucide="pie-chart" style="width: 20px; height: 20px;"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="switchPage('barang')">
+                <i data-lucide="package" style="width: 20px; height: 20px;"></i> Barang
+            </div>
+            <div class="nav-item" onclick="switchPage('kategori')">
+                <i data-lucide="tag" style="width: 20px; height: 20px;"></i> Kategori
+            </div>
+            <div class="nav-item" onclick="switchPage('transaksi')">
+                <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i> Transaksi
+            </div>
         </nav>
-        <button class="btn-logout" onclick="logout()">Logout</button>
+        <button class="btn-logout" onclick="logout()">
+            <i data-lucide="log-out" style="width: 18px; height: 18px;"></i> Logout
+        </button>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main id="app-main" class="main-content">
-        <!-- Dashboard Section -->
+        <!-- Dashboard -->
         <section id="dashboard-section" class="fade-in">
             <div class="page-header">
                 <div class="page-title">
                     <h1>Dashboard Overview</h1>
-                    <p>Ringkasan performa toko Anda hari ini.</p>
+                    <p>Ringkasan performa toko hari ini.</p>
                 </div>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3>Total Barang</h3>
                     <div id="stat-barang" class="value">0</div>
-                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">📦</div>
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;"><i data-lucide="package"></i></div>
                 </div>
                 <div class="stat-card">
                     <h3>Total Kategori</h3>
                     <div id="stat-kategori" class="value">0</div>
-                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">🏷️</div>
+                    <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;"><i data-lucide="tag"></i></div>
                 </div>
                 <div class="stat-card">
                     <h3>Total Transaksi</h3>
                     <div id="stat-transaksi" class="value">0</div>
-                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">💰</div>
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><i data-lucide="shopping-bag"></i></div>
                 </div>
                 <div class="stat-card">
                     <h3>Total Pendapatan</h3>
                     <div id="stat-pendapatan" class="value" style="font-size: 1.5rem;">Rp 0</div>
-                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">📈</div>
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><i data-lucide="trending-up"></i></div>
                 </div>
             </div>
             <div class="glass-panel">
-                <h2 class="panel-title">Aktivitas Terakhir</h2>
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Riwayat Transaksi Terakhir</h2>
                 <table id="recent-transactions-table">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Tanggal</th>
-                            <th>Total Harga</th>
+                            <th>Tanggal & Waktu</th>
+                            <th style="text-align: right;">Total Harga</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -365,14 +268,14 @@
             </div>
         </section>
 
-        <!-- Barang Section -->
+        <!-- Barang -->
         <section id="barang-section" class="fade-in" style="display: none;">
             <div class="page-header">
                 <div class="page-title">
                     <h1>Manajemen Barang</h1>
-                    <p>Daftar semua stok barang Anda.</p>
+                    <p>Kelola semua stok produk Anda.</p>
                 </div>
-                <button class="btn-add" onclick="openModal('barang')">➕ Tambah Barang</button>
+                <button class="btn-add" onclick="openModal('barang')"><i data-lucide="plus"></i> Tambah Barang</button>
             </div>
             <div class="glass-panel">
                 <table id="barang-table">
@@ -391,14 +294,14 @@
             </div>
         </section>
 
-        <!-- Kategori Section -->
+        <!-- Kategori -->
         <section id="kategori-section" class="fade-in" style="display: none;">
             <div class="page-header">
                 <div class="page-title">
                     <h1>Manajemen Kategori</h1>
-                    <p>Atur pengelompokan barang Anda.</p>
+                    <p>Atur pengelompokan barang.</p>
                 </div>
-                <button class="btn-add" onclick="openModal('kategori')">➕ Tambah Kategori</button>
+                <button class="btn-add" onclick="openModal('kategori')"><i data-lucide="plus"></i> Tambah Kategori</button>
             </div>
             <div class="glass-panel">
                 <table id="kategori-table">
@@ -415,24 +318,26 @@
             </div>
         </section>
 
-        <!-- Transaksi Section -->
+        <!-- Transaksi -->
         <section id="transaksi-section" class="fade-in" style="display: none;">
             <div class="page-header">
                 <div class="page-title">
                     <h1>Sistem Kasir (POS)</h1>
-                    <p>Pilih barang dan proses transaksi cepat.</p>
+                    <p>Proses belanja pelanggan.</p>
                 </div>
             </div>
             <div class="pos-grid">
                 <div class="product-grid" id="pos-product-grid"></div>
                 <div class="cart-panel glass-panel">
-                    <h3>🛒 Keranjang</h3>
-                    <div id="cart-items" style="margin: 1.5rem 0;"></div>
+                    <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="shopping-cart" style="width: 20px;"></i> Keranjang</h3>
+                    <div id="cart-items" style="margin: 2rem 0;"></div>
                     <div class="cart-total">
-                        <span>Total:</span>
+                        <span>Total Bayar</span>
                         <span id="cart-total-display">Rp 0</span>
                     </div>
-                    <button class="btn-primary" style="margin-top: 1.5rem;" onclick="processCheckout()">Proses Bayar</button>
+                    <button class="btn-primary" style="margin-top: 2rem; padding: 1.2rem;" onclick="processCheckout()">
+                        <i data-lucide="credit-card" style="width: 20px;"></i> Bayar Sekarang
+                    </button>
                 </div>
             </div>
         </section>
@@ -441,31 +346,44 @@
     <!-- Modals -->
     <div id="app-modal" class="modal">
         <div class="modal-content">
-            <h2 id="modal-title">Judul Modal</h2>
-            <form id="modal-form" style="margin-top: 1.5rem;"></form>
-            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                <button class="btn-logout" style="flex: 1; background: #94a3b8;" onclick="closeModal()">Batal</button>
-                <button class="btn-primary" style="flex: 1;" id="btn-save">Simpan</button>
+            <h2 id="modal-title">Form Data</h2>
+            <form id="modal-form" style="margin-top: 2rem;"></form>
+            <div style="display: flex; gap: 1rem; margin-top: 2.5rem;">
+                <button class="btn-logout" style="flex: 1; background: #cbd5e1; color: #475569;" onclick="closeModal()">Batal</button>
+                <button class="btn-primary" style="flex: 1;" id="btn-save">Simpan Data</button>
             </div>
         </div>
     </div>
 
+    <!-- API Settings Tool -->
+    <div class="api-settings">
+        <button class="btn-settings" onclick="toggleApiSettings()" title="Pengaturan API">
+            <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+        </button>
+        <div id="api-panel" style="display: none; background: white; padding: 1rem; border-radius: 12px; box-shadow: var(--glass-shadow); margin-bottom: 0.5rem; width: 250px; border: 1px solid var(--glass-border);">
+            <label style="font-size: 0.7rem; font-weight: 700; color: var(--text-light);">BASE URL API</label>
+            <input type="text" id="api-url-input" class="input-field" style="padding: 0.5rem; font-size: 0.8rem; margin: 0.5rem 0;" value="http://localhost:3000">
+            <button class="btn-primary" style="padding: 0.4rem; font-size: 0.8rem;" onclick="saveApiUrl()">Simpan & Refresh</button>
+        </div>
+    </div>
+
     <script>
-        const API_URL = 'http://localhost:3000';
+        let API_URL = localStorage.getItem('api_url') || 'http://localhost:3000';
         let currentUser = null;
         let categories = [];
         let products = [];
         let cart = [];
 
-        // --- Core Logic ---
         window.onload = () => {
+            lucide.createIcons();
+            document.getElementById('api-url-input').value = API_URL;
+            
             const savedUser = localStorage.getItem('user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 initApp();
             } else {
-                document.getElementById('loading-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('loading-overlay').style.display = 'none', 500);
+                hideLoading();
             }
         };
 
@@ -475,9 +393,17 @@
             document.getElementById('app-main').style.display = 'block';
             document.getElementById('user-display-name').innerText = currentUser.username.toUpperCase();
             
-            await loadData();
-            switchPage('dashboard');
-            
+            const success = await loadData();
+            if (success) {
+                switchPage('dashboard');
+            } else {
+                alert("Gagal terhubung ke backend! Pastikan backend aktif.");
+                logout();
+            }
+            hideLoading();
+        }
+
+        function hideLoading() {
             document.getElementById('loading-overlay').style.opacity = '0';
             setTimeout(() => document.getElementById('loading-overlay').style.display = 'none', 500);
         }
@@ -494,7 +420,6 @@
                 categories = cRes.data || [];
                 const transactions = tRes.data || [];
 
-                // Update Stats
                 document.getElementById('stat-barang').innerText = products.length;
                 document.getElementById('stat-kategori').innerText = categories.length;
                 document.getElementById('stat-transaksi').innerText = transactions.length;
@@ -503,16 +428,14 @@
                 document.getElementById('stat-pendapatan').innerText = formatRupiah(income);
 
                 renderAll();
-            } catch (err) {
-                console.error("Gagal memuat data", err);
-            }
+                return true;
+            } catch (err) { return false; }
         }
 
         function formatRupiah(num) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+            return new Intl.FormatNumber('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
-        // --- Auth ---
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             const username = document.getElementById('login-username').value;
@@ -532,39 +455,35 @@
                     initApp();
                 } else {
                     const err = document.getElementById('login-error');
-                    err.innerText = result.message || "Login gagal";
+                    err.innerText = result.message || "Username/Password salah!";
                     err.style.display = 'block';
                 }
             } catch (err) {
-                alert("Koneksi ke backend gagal!");
+                alert("Koneksi ke backend gagal! Periksa alamat API Anda.");
             }
         };
 
-        function logout() {
-            localStorage.removeItem('user');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('user'); location.reload(); }
 
-        // --- Navigation ---
         function switchPage(page) {
             const sections = ['dashboard', 'barang', 'kategori', 'transaksi'];
             sections.forEach(s => document.getElementById(`${s}-section`).style.display = 'none');
             document.getElementById(`${page}-section`).style.display = 'block';
             
-            // Nav active state
             document.querySelectorAll('.nav-item').forEach((el, idx) => {
                 if (sections[idx] === page) el.classList.add('active');
                 else el.classList.remove('active');
             });
 
             if (page === 'transaksi') renderPOS();
+            lucide.createIcons();
         }
 
-        // --- Rendering ---
         function renderAll() {
             renderTableBarang();
             renderTableKategori();
             renderRecentTransactions();
+            lucide.createIcons();
         }
 
         function renderTableBarang() {
@@ -574,14 +493,15 @@
                     <td>${i + 1}</td>
                     <td style="font-weight: 600;">${b.nama_barang}</td>
                     <td>${b.kategori?.nama_kategori || '-'}</td>
-                    <td>${formatRupiah(b.harga)}</td>
-                    <td><span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.2rem 0.6rem; border-radius: 20px; font-weight: 600;">${b.stok}</span></td>
+                    <td style="color: var(--primary-color); font-weight: 700;">${formatRupiah(b.harga)}</td>
+                    <td><span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">${b.stok}</span></td>
                     <td style="text-align: right;">
-                        <button class="btn-action btn-edit" onclick="editBarang(${b.id})">✎</button>
-                        <button class="btn-action btn-delete" onclick="deleteItem('barang', ${b.id})">🗑</button>
+                        <button class="btn-action btn-edit" onclick="editBarang(${b.id})"><i data-lucide="edit-3" style="width: 16px;"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteItem('barang', ${b.id})"><i data-lucide="trash-2" style="width: 16px;"></i></button>
                     </td>
                 </tr>
             `).join('');
+            lucide.createIcons();
         }
 
         function renderTableKategori() {
@@ -590,36 +510,36 @@
                 <tr>
                     <td>${i + 1}</td>
                     <td style="font-weight: 600;">${c.nama_kategori}</td>
-                    <td>${c.deskripsi || '-'}</td>
+                    <td style="color: var(--text-light);">${c.deskripsi || '-'}</td>
                     <td style="text-align: right;">
-                        <button class="btn-action btn-edit" onclick="editKategori(${c.id})">✎</button>
-                        <button class="btn-action btn-delete" onclick="deleteItem('kategori', ${c.id})">🗑</button>
+                        <button class="btn-action btn-edit" onclick="editKategori(${c.id})"><i data-lucide="edit-3" style="width: 16px;"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteItem('kategori', ${c.id})"><i data-lucide="trash-2" style="width: 16px;"></i></button>
                     </td>
                 </tr>
             `).join('');
+            lucide.createIcons();
         }
 
         async function renderRecentTransactions() {
             const res = await fetch(`${API_URL}/transaksi`).then(r => r.json());
             const list = res.data || [];
             const tbody = document.querySelector('#recent-transactions-table tbody');
-            tbody.innerHTML = list.slice(-5).reverse().map((t, i) => `
+            tbody.innerHTML = list.slice(-8).reverse().map((t, i) => `
                 <tr>
                     <td>${i + 1}</td>
-                    <td>${new Date(t.tanggal_transaksi).toLocaleString()}</td>
-                    <td style="font-weight: 700; color: var(--primary-color);">${formatRupiah(t.total_harga)}</td>
+                    <td style="font-size: 0.9rem;">${new Date(t.tanggal_transaksi).toLocaleString('id-ID')}</td>
+                    <td style="text-align: right; font-weight: 700; color: var(--primary-color);">${formatRupiah(t.total_harga)}</td>
                 </tr>
             `).join('');
         }
 
-        // --- POS Logic ---
         function renderPOS() {
             const grid = document.getElementById('pos-product-grid');
             grid.innerHTML = products.map(p => `
                 <div class="product-card" onclick="addToCart(${p.id})">
                     <h4>${p.nama_barang}</h4>
                     <div class="price">${formatRupiah(p.harga)}</div>
-                    <div class="stock">Stok: ${p.stok}</div>
+                    <div class="stock">📦 ${p.stok} Tersedia</div>
                 </div>
             `).join('');
             renderCart();
@@ -628,9 +548,8 @@
         function addToCart(id) {
             const product = products.find(p => p.id === id);
             const inCart = cart.find(c => c.id === id);
-            
             if (inCart) {
-                if (inCart.qty >= product.stok) return alert("Stok tidak mencukupi!");
+                if (inCart.qty >= product.stok) return alert("Stok habis!");
                 inCart.qty++;
             } else {
                 cart.push({ ...product, qty: 1 });
@@ -641,37 +560,32 @@
         function renderCart() {
             const container = document.getElementById('cart-items');
             if (cart.length === 0) {
-                container.innerHTML = '<p style="color: #94a3b8; text-align: center;">Keranjang kosong</p>';
+                container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 2rem;"><i data-lucide="shopping-bag" style="width: 40px; height: 40px; margin-bottom: 1rem; opacity: 0.3;"></i><br>Keranjang kosong</div>';
                 document.getElementById('cart-total-display').innerText = 'Rp 0';
+                lucide.createIcons();
                 return;
             }
-            
             let total = 0;
             container.innerHTML = cart.map(item => {
                 total += item.harga * item.qty;
                 return `
                     <div class="cart-item">
                         <div>
-                            <strong>${item.nama_barang}</strong><br>
-                            <small>${item.qty} x ${formatRupiah(item.harga)}</small>
+                            <div style="font-weight: 600;">${item.nama_barang}</div>
+                            <small style="color: var(--text-light);">${item.qty} x ${formatRupiah(item.harga)}</small>
                         </div>
-                        <strong>${formatRupiah(item.harga * item.qty)}</strong>
+                        <div style="font-weight: 700;">${formatRupiah(item.harga * item.qty)}</div>
                     </div>
                 `;
             }).join('');
-            
             document.getElementById('cart-total-display').innerText = formatRupiah(total);
         }
 
         async function processCheckout() {
-            if (cart.length === 0) return alert("Keranjang masih kosong!");
-            
+            if (cart.length === 0) return alert("Keranjang kosong!");
             const total_harga = cart.reduce((sum, i) => sum + (i.harga * i.qty), 0);
             const detail_transaksi = cart.map(i => ({
-                barang_id: i.id,
-                jumlah: i.qty,
-                harga_satuan: i.harga,
-                subtotal: i.harga * i.qty
+                barang_id: i.id, jumlah: i.qty, harga_satuan: i.harga, subtotal: i.harga * i.qty
             }));
 
             try {
@@ -680,47 +594,39 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ user_id: currentUser.id, total_harga, detail_transaksi })
                 });
-                
                 if (res.ok) {
-                    alert("Transaksi Berhasil!");
-                    cart = [];
-                    await loadData();
-                    switchPage('dashboard');
+                    alert("Sukses! Transaksi Berhasil.");
+                    cart = []; await loadData(); switchPage('dashboard');
                 }
-            } catch (err) {
-                alert("Gagal memproses transaksi");
-            }
+            } catch (err) { alert("Server error!"); }
         }
 
-        // --- CRUD Modal Logic ---
         function openModal(type) {
             const modal = document.getElementById('app-modal');
-            const title = document.getElementById('modal-title');
             const form = document.getElementById('modal-form');
-            const btn = document.getElementById('btn-save');
-            
             modal.style.display = 'flex';
-            form.innerHTML = '';
-
             if (type === 'barang') {
-                title.innerText = 'Tambah Barang';
+                document.getElementById('modal-title').innerText = 'Tambah Produk Baru';
                 form.innerHTML = `
                     <div class="input-group"><label>Nama Barang</label><input type="text" id="m-nama" class="input-field" required></div>
-                    <div class="input-group"><label>Harga</label><input type="number" id="m-harga" class="input-field" required></div>
-                    <div class="input-group"><label>Stok</label><input type="number" id="m-stok" class="input-field" required></div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="input-group" style="flex: 1;"><label>Harga</label><input type="number" id="m-harga" class="input-field" required></div>
+                        <div class="input-group" style="flex: 1;"><label>Stok</label><input type="number" id="m-stok" class="input-field" required></div>
+                    </div>
                     <div class="input-group"><label>Kategori</label><select id="m-kategori" class="input-field">
                         ${categories.map(c => `<option value="${c.id}">${c.nama_kategori}</option>`).join('')}
                     </select></div>
                 `;
-                btn.onclick = () => saveItem('barang');
-            } else if (type === 'kategori') {
-                title.innerText = 'Tambah Kategori';
+                document.getElementById('btn-save').onclick = () => saveItem('barang');
+            } else {
+                document.getElementById('modal-title').innerText = 'Tambah Kategori Baru';
                 form.innerHTML = `
                     <div class="input-group"><label>Nama Kategori</label><input type="text" id="m-nama" class="input-field" required></div>
                     <div class="input-group"><label>Deskripsi</label><input type="text" id="m-deskripsi" class="input-field"></div>
                 `;
-                btn.onclick = () => saveItem('kategori');
+                document.getElementById('btn-save').onclick = () => saveItem('kategori');
             }
+            lucide.createIcons();
         }
 
         async function saveItem(type) {
@@ -734,29 +640,34 @@
                 payload.nama_kategori = document.getElementById('m-nama').value;
                 payload.deskripsi = document.getElementById('m-deskripsi').value;
             }
-
             try {
                 const res = await fetch(`${API_URL}/${type}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (res.ok) {
-                    closeModal();
-                    await loadData();
-                }
-            } catch (err) { alert("Gagal menyimpan data"); }
+                if (res.ok) { closeModal(); await loadData(); }
+            } catch (err) { alert("Error menyimpan data"); }
         }
 
         async function deleteItem(type, id) {
-            if (!confirm("Hapus data ini?")) return;
+            if (!confirm("Yakin ingin menghapus data ini?")) return;
             try {
                 const res = await fetch(`${API_URL}/${type}/${id}`, { method: 'DELETE' });
                 if (res.ok) await loadData();
-            } catch (err) { alert("Gagal menghapus data"); }
+            } catch (err) { alert("Gagal menghapus!"); }
         }
 
         function closeModal() { document.getElementById('app-modal').style.display = 'none'; }
+        function toggleApiSettings() {
+            const panel = document.getElementById('api-panel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        function saveApiUrl() {
+            const url = document.getElementById('api-url-input').value;
+            localStorage.setItem('api_url', url);
+            location.reload();
+        }
     </script>
 </body>
 </html>
