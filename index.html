@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko Sembako ARNOF | Dashboard Full-Stack</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons Library -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
@@ -99,7 +98,8 @@
             border: none; border-radius: var(--radius-md); font-weight: 700; cursor: pointer;
             transition: 0.3s; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
         }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; }
         .page-title h1 { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); }
@@ -131,24 +131,46 @@
         .btn-edit { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
         .btn-delete { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
 
-        .pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.2rem; }
+        .pos-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.2rem; }
         .product-card {
-            background: var(--white); padding: 1.5rem; border-radius: var(--radius-md);
+            background: var(--white); padding: 1.2rem; border-radius: var(--radius-md);
             border: 1px solid rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;
             display: flex; flex-direction: column; gap: 0.5rem;
         }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-color: var(--primary-color); }
-        .product-card h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
-        .product-card .price { font-weight: 700; color: var(--primary-color); font-size: 1.2rem; }
-        .product-card .stock { font-size: 0.8rem; background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; align-self: flex-start; }
+        .product-card h4 { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
+        .product-card .price { font-weight: 700; color: var(--primary-color); font-size: 1.1rem; }
+        .product-card .stock { font-size: 0.75rem; background: #f1f5f9; padding: 0.2rem 0.5rem; border-radius: 4px; align-self: flex-start; }
 
-        .cart-panel { background: var(--white); padding: 2rem; border-radius: var(--radius-lg); position: sticky; top: 2rem; height: fit-content; }
-        .cart-item { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .cart-total { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px dashed rgba(0,0,0,0.1); display: flex; justify-content: space-between; font-weight: 700; font-size: 1.5rem; color: var(--primary-color); }
+        .cart-panel { background: var(--white); padding: 1.5rem; border-radius: var(--radius-lg); position: sticky; top: 2rem; height: fit-content; display: flex; flex-direction: column; max-height: 85vh; }
+        .cart-items-container { overflow-y: auto; flex: 1; margin: 1rem 0; padding-right: 0.5rem; }
+        .cart-item { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; background: #f8fafc; border-radius: 8px; margin-bottom: 0.8rem; }
+        .cart-item-header { display: flex; justify-content: space-between; font-weight: 600; }
+        .cart-item-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+        .qty-btn { width: 26px; height: 26px; border-radius: 50%; border: none; background: white; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+        .cart-total { margin-top: 1rem; padding-top: 1rem; border-top: 2px dashed rgba(0,0,0,0.1); display: flex; justify-content: space-between; font-weight: 700; font-size: 1.4rem; color: var(--text-dark); }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: var(--white); padding: 3rem; border-radius: var(--radius-lg); width: 100%; max-width: 500px; animation: slideUp 0.4s ease-out; }
+        .modal-content { background: var(--white); padding: 2.5rem; border-radius: var(--radius-lg); width: 100%; max-width: 500px; animation: slideUp 0.4s ease-out; }
+
+        /* Struk / Receipt Styles */
+        .receipt-modal { background: white; width: 350px; padding: 20px; border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.15); font-family: 'Courier New', Courier, monospace; color: #000; }
+        .receipt-header { text-align: center; margin-bottom: 15px; }
+        .receipt-title { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+        .receipt-info { font-size: 11px; margin-bottom: 2px; line-height: 1.3; }
+        .receipt-divider { border-top: 1px dashed #000; margin: 10px 0; }
+        .receipt-item-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px; }
+        .receipt-total { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 10px; }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 11px; }
+        .receipt-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .receipt-modal, .receipt-modal * { visibility: visible; }
+            .receipt-modal { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; border: none; }
+            .receipt-actions { display: none; }
+        }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.6s ease-out; }
@@ -161,7 +183,7 @@
 <body>
     <div id="loading-overlay">
         <i data-lucide="loader-2" style="width: 40px; height: 40px; animation: spin 2s linear infinite;"></i>
-        <p style="margin-top: 1rem;">Menghubungkan ke Toko...</p>
+        <p style="margin-top: 1rem;">Memuat Data...</p>
     </div>
 
     <style>@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }</style>
@@ -323,20 +345,22 @@
             <div class="page-header">
                 <div class="page-title">
                     <h1>Sistem Kasir (POS)</h1>
-                    <p>Proses belanja pelanggan.</p>
+                    <p>Pilih barang dan proses belanja pelanggan.</p>
                 </div>
             </div>
             <div class="pos-grid">
                 <div class="product-grid" id="pos-product-grid"></div>
                 <div class="cart-panel glass-panel">
-                    <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="shopping-cart" style="width: 20px;"></i> Keranjang</h3>
-                    <div id="cart-items" style="margin: 2rem 0;"></div>
+                    <h3 style="display: flex; align-items: center; gap: 0.8rem;"><i data-lucide="shopping-cart" style="width: 24px; color: var(--primary-color);"></i> Keranjang</h3>
+                    <div class="cart-items-container" id="cart-items-list">
+                        <!-- Keranjang Items -->
+                    </div>
                     <div class="cart-total">
-                        <span>Total Bayar</span>
+                        <span style="font-size: 1rem; color: var(--text-light);">Total</span>
                         <span id="cart-total-display">Rp 0</span>
                     </div>
-                    <button class="btn-primary" style="margin-top: 2rem; padding: 1.2rem;" onclick="processCheckout()">
-                        <i data-lucide="credit-card" style="width: 20px;"></i> Bayar Sekarang
+                    <button id="btn-checkout" class="btn-primary" style="margin-top: 1.5rem; padding: 1rem;" onclick="handleCheckout()" disabled>
+                        <i data-lucide="check-circle" style="width: 20px;"></i> Proses Transaksi
                     </button>
                 </div>
             </div>
@@ -355,7 +379,13 @@
         </div>
     </div>
 
-    <!-- API Settings Tool -->
+    <!-- Receipt Modal -->
+    <div id="receipt-overlay" class="modal" style="background: rgba(0,0,0,0.6);">
+        <div class="receipt-modal fade-in" id="receipt-content">
+            <!-- Struk Konten -->
+        </div>
+    </div>
+
     <div class="api-settings">
         <button class="btn-settings" onclick="toggleApiSettings()" title="Pengaturan API">
             <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
@@ -377,14 +407,11 @@
         window.onload = () => {
             lucide.createIcons();
             document.getElementById('api-url-input').value = API_URL;
-            
             const savedUser = localStorage.getItem('user');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 initApp();
-            } else {
-                hideLoading();
-            }
+            } else { hideLoading(); }
         };
 
         async function initApp() {
@@ -392,14 +419,9 @@
             document.getElementById('app-sidebar').style.display = 'flex';
             document.getElementById('app-main').style.display = 'block';
             document.getElementById('user-display-name').innerText = currentUser.username.toUpperCase();
-            
             const success = await loadData();
-            if (success) {
-                switchPage('dashboard');
-            } else {
-                alert("Gagal terhubung ke backend! Pastikan backend aktif.");
-                logout();
-            }
+            if (success) { switchPage('dashboard'); }
+            else { alert("Gagal terhubung ke backend!"); logout(); }
             hideLoading();
         }
 
@@ -415,39 +437,33 @@
                     fetch(`${API_URL}/kategori`).then(r => r.json()),
                     fetch(`${API_URL}/transaksi`).then(r => r.json())
                 ]);
-                
                 products = pRes.data || [];
                 categories = cRes.data || [];
                 const transactions = tRes.data || [];
-
                 document.getElementById('stat-barang').innerText = products.length;
                 document.getElementById('stat-kategori').innerText = categories.length;
                 document.getElementById('stat-transaksi').innerText = transactions.length;
-                
                 const income = transactions.reduce((sum, t) => sum + t.total_harga, 0);
                 document.getElementById('stat-pendapatan').innerText = formatRupiah(income);
-
                 renderAll();
                 return true;
             } catch (err) { return false; }
         }
 
         function formatRupiah(num) {
-            return new Intl.FormatNumber('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
         document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
             const username = document.getElementById('login-username').value;
             const password = document.getElementById('login-password').value;
-            
             try {
                 const res = await fetch(`${API_URL}/user/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-                
                 const result = await res.json();
                 if (res.ok) {
                     currentUser = result.data;
@@ -455,12 +471,10 @@
                     initApp();
                 } else {
                     const err = document.getElementById('login-error');
-                    err.innerText = result.message || "Username/Password salah!";
+                    err.innerText = result.message || "Gagal masuk";
                     err.style.display = 'block';
                 }
-            } catch (err) {
-                alert("Koneksi ke backend gagal! Periksa alamat API Anda.");
-            }
+            } catch (err) { alert("Backend offline!"); }
         };
 
         function logout() { localStorage.removeItem('user'); location.reload(); }
@@ -469,12 +483,10 @@
             const sections = ['dashboard', 'barang', 'kategori', 'transaksi'];
             sections.forEach(s => document.getElementById(`${s}-section`).style.display = 'none');
             document.getElementById(`${page}-section`).style.display = 'block';
-            
             document.querySelectorAll('.nav-item').forEach((el, idx) => {
                 if (sections[idx] === page) el.classList.add('active');
                 else el.classList.remove('active');
             });
-
             if (page === 'transaksi') renderPOS();
             lucide.createIcons();
         }
@@ -493,8 +505,8 @@
                     <td>${i + 1}</td>
                     <td style="font-weight: 600;">${b.nama_barang}</td>
                     <td>${b.kategori?.nama_kategori || '-'}</td>
-                    <td style="color: var(--primary-color); font-weight: 700;">${formatRupiah(b.harga)}</td>
-                    <td><span style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 0.3rem 0.8rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">${b.stok}</span></td>
+                    <td>${formatRupiah(b.harga)}</td>
+                    <td><span style="font-weight: 700; color: var(--success);">${b.stok}</span></td>
                     <td style="text-align: right;">
                         <button class="btn-action btn-edit" onclick="editBarang(${b.id})"><i data-lucide="edit-3" style="width: 16px;"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteItem('barang', ${b.id})"><i data-lucide="trash-2" style="width: 16px;"></i></button>
@@ -510,7 +522,7 @@
                 <tr>
                     <td>${i + 1}</td>
                     <td style="font-weight: 600;">${c.nama_kategori}</td>
-                    <td style="color: var(--text-light);">${c.deskripsi || '-'}</td>
+                    <td>${c.deskripsi || '-'}</td>
                     <td style="text-align: right;">
                         <button class="btn-action btn-edit" onclick="editKategori(${c.id})"><i data-lucide="edit-3" style="width: 16px;"></i></button>
                         <button class="btn-action btn-delete" onclick="deleteItem('kategori', ${c.id})"><i data-lucide="trash-2" style="width: 16px;"></i></button>
@@ -524,89 +536,168 @@
             const res = await fetch(`${API_URL}/transaksi`).then(r => r.json());
             const list = res.data || [];
             const tbody = document.querySelector('#recent-transactions-table tbody');
-            tbody.innerHTML = list.slice(-8).reverse().map((t, i) => `
+            tbody.innerHTML = list.slice(-5).reverse().map((t, i) => `
                 <tr>
                     <td>${i + 1}</td>
-                    <td style="font-size: 0.9rem;">${new Date(t.tanggal_transaksi).toLocaleString('id-ID')}</td>
+                    <td>${new Date(t.tanggal_transaksi).toLocaleString('id-ID')}</td>
                     <td style="text-align: right; font-weight: 700; color: var(--primary-color);">${formatRupiah(t.total_harga)}</td>
                 </tr>
             `).join('');
         }
 
+        // --- POS Logic ---
         function renderPOS() {
             const grid = document.getElementById('pos-product-grid');
             grid.innerHTML = products.map(p => `
                 <div class="product-card" onclick="addToCart(${p.id})">
-                    <h4>${p.nama_barang}</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h4>${p.nama_barang}</h4>
+                        <span class="stock">📦 ${p.stok}</span>
+                    </div>
+                    <div style="color: var(--text-light); font-size: 0.8rem; margin-bottom: 0.5rem;">${p.kategori?.nama_kategori || '-'}</div>
                     <div class="price">${formatRupiah(p.harga)}</div>
-                    <div class="stock">📦 ${p.stok} Tersedia</div>
                 </div>
             `).join('');
             renderCart();
         }
 
         function addToCart(id) {
-            const product = products.find(p => p.id === id);
+            const barang = products.find(p => p.id === id);
+            if (barang.stok <= 0) return alert("Stok habis!");
             const inCart = cart.find(c => c.id === id);
             if (inCart) {
-                if (inCart.qty >= product.stok) return alert("Stok habis!");
+                if (inCart.qty >= barang.stok) return alert("Melebihi stok!");
                 inCart.qty++;
             } else {
-                cart.push({ ...product, qty: 1 });
+                cart.push({ ...barang, qty: 1 });
             }
             renderCart();
         }
 
+        function updateQty(id, change) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                const newQty = item.qty + change;
+                if (newQty > 0 && newQty <= item.stok) {
+                    item.qty = newQty;
+                } else if (newQty === 0) {
+                    removeFromCart(id);
+                }
+            }
+            renderCart();
+        }
+
+        function removeFromCart(id) { cart = cart.filter(i => i.id !== id); renderCart(); }
+
         function renderCart() {
-            const container = document.getElementById('cart-items');
+            const container = document.getElementById('cart-items-list');
             if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 2rem;"><i data-lucide="shopping-bag" style="width: 40px; height: 40px; margin-bottom: 1rem; opacity: 0.3;"></i><br>Keranjang kosong</div>';
+                container.innerHTML = '<div style="text-align: center; color: #94a3b8; padding: 2rem;">Keranjang Kosong</div>';
                 document.getElementById('cart-total-display').innerText = 'Rp 0';
-                lucide.createIcons();
+                document.getElementById('btn-checkout').disabled = true;
                 return;
             }
+            document.getElementById('btn-checkout').disabled = false;
             let total = 0;
             container.innerHTML = cart.map(item => {
                 total += item.harga * item.qty;
                 return `
                     <div class="cart-item">
-                        <div>
-                            <div style="font-weight: 600;">${item.nama_barang}</div>
-                            <small style="color: var(--text-light);">${item.qty} x ${formatRupiah(item.harga)}</small>
+                        <div class="cart-item-header">
+                            <span>${item.nama_barang}</span>
+                            <span>${formatRupiah(item.harga * item.qty)}</span>
                         </div>
-                        <div style="font-weight: 700;">${formatRupiah(item.harga * item.qty)}</div>
+                        <div class="cart-item-controls">
+                            <small style="color: #64748b;">${formatRupiah(item.harga)} / pcs</small>
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <button class="qty-btn" onclick="updateQty(${item.id}, -1)">-</button>
+                                <strong>${item.qty}</strong>
+                                <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+                                <button style="background: none; border: none; color: #ef4444; margin-left: 5px; cursor: pointer;" onclick="removeFromCart(${item.id})">🗑</button>
+                            </div>
+                        </div>
                     </div>
                 `;
             }).join('');
             document.getElementById('cart-total-display').innerText = formatRupiah(total);
         }
 
-        async function processCheckout() {
-            if (cart.length === 0) return alert("Keranjang kosong!");
+        async function handleCheckout() {
+            if (cart.length === 0) return;
             const total_harga = cart.reduce((sum, i) => sum + (i.harga * i.qty), 0);
-            const detail_transaksi = cart.map(i => ({
-                barang_id: i.id, jumlah: i.qty, harga_satuan: i.harga, subtotal: i.harga * i.qty
-            }));
-
+            const payload = {
+                user_id: currentUser.id,
+                items: cart.map(i => ({ barang_id: i.id, jumlah: i.qty, harga_satuan: i.harga }))
+            };
             try {
                 const res = await fetch(`${API_URL}/transaksi`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ user_id: currentUser.id, total_harga, detail_transaksi })
+                    body: JSON.stringify(payload)
                 });
+                const result = await res.json();
                 if (res.ok) {
-                    alert("Sukses! Transaksi Berhasil.");
+                    const receiptData = {
+                        ...result.data,
+                        items: cart.map(i => ({ nama_barang: i.nama_barang, jumlah: i.qty, harga_satuan: i.harga, subtotal: i.harga * i.qty }))
+                    };
+                    showReceipt(receiptData);
                     cart = []; await loadData(); switchPage('dashboard');
-                }
+                } else { alert("Transaksi Gagal: " + result.message); }
             } catch (err) { alert("Server error!"); }
         }
 
+        function showReceipt(data) {
+            const overlay = document.getElementById('receipt-overlay');
+            const content = document.getElementById('receipt-content');
+            overlay.style.display = 'flex';
+            content.innerHTML = `
+                <div class="receipt-header">
+                    <div class="receipt-title">TokoSembako Arnof</div>
+                    <div class="receipt-info">Jl.Gunung Waras,Kampung Gunung Waras,Kecamatan Pakuan Ratu. Kabupaten Way Kanan , Lampung</div>
+                    <div class="receipt-info">Telp: 0858-9661-19444</div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <div class="receipt-item-row"><span>No. Transaksi:</span><span>#${data.id}</span></div>
+                    <div class="receipt-item-row"><span>Tanggal:</span><span>${new Date(data.tanggal_transaksi).toLocaleString('id-ID')}</span></div>
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-items">
+                    ${data.items.map(i => `
+                        <div style="margin-bottom: 8px;">
+                            <div style="font-weight: 600; font-size: 13px;">${i.nama_barang}</div>
+                            <div class="receipt-item-row">
+                                <span style="color: #555;">${i.jumlah} x ${formatRupiah(i.harga_satuan)}</span>
+                                <span>${formatRupiah(i.subtotal)}</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-total">
+                    <span>TOTAL</span>
+                    <span>${formatRupiah(data.total_harga)}</span>
+                </div>
+                <div class="receipt-footer">
+                    <p>Terima kasih telah berbelanja!</p>
+                    <p>Barang yang sudah dibeli tidak dapat ditukar</p>
+                </div>
+                <div class="receipt-actions">
+                    <button class="btn-logout" style="flex: 1; background: #eee; color: #333;" onclick="closeReceipt()">Tutup</button>
+                    <button class="btn-primary" style="flex: 1;" onclick="window.print()">Cetak</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function closeReceipt() { document.getElementById('receipt-overlay').style.display = 'none'; }
+        function closeModal() { document.getElementById('app-modal').style.display = 'none'; }
         function openModal(type) {
             const modal = document.getElementById('app-modal');
             const form = document.getElementById('modal-form');
             modal.style.display = 'flex';
             if (type === 'barang') {
-                document.getElementById('modal-title').innerText = 'Tambah Produk Baru';
+                document.getElementById('modal-title').innerText = 'Tambah Produk';
                 form.innerHTML = `
                     <div class="input-group"><label>Nama Barang</label><input type="text" id="m-nama" class="input-field" required></div>
                     <div style="display: flex; gap: 1rem;">
@@ -619,16 +710,11 @@
                 `;
                 document.getElementById('btn-save').onclick = () => saveItem('barang');
             } else {
-                document.getElementById('modal-title').innerText = 'Tambah Kategori Baru';
-                form.innerHTML = `
-                    <div class="input-group"><label>Nama Kategori</label><input type="text" id="m-nama" class="input-field" required></div>
-                    <div class="input-group"><label>Deskripsi</label><input type="text" id="m-deskripsi" class="input-field"></div>
-                `;
+                document.getElementById('modal-title').innerText = 'Tambah Kategori';
+                form.innerHTML = `<div class="input-group"><label>Nama Kategori</label><input type="text" id="m-nama" class="input-field" required></div><div class="input-group"><label>Deskripsi</label><input type="text" id="m-deskripsi" class="input-field"></div>`;
                 document.getElementById('btn-save').onclick = () => saveItem('kategori');
             }
-            lucide.createIcons();
         }
-
         async function saveItem(type) {
             const payload = {};
             if (type === 'barang') {
@@ -640,34 +726,12 @@
                 payload.nama_kategori = document.getElementById('m-nama').value;
                 payload.deskripsi = document.getElementById('m-deskripsi').value;
             }
-            try {
-                const res = await fetch(`${API_URL}/${type}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (res.ok) { closeModal(); await loadData(); }
-            } catch (err) { alert("Error menyimpan data"); }
+            const res = await fetch(`${API_URL}/${type}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (res.ok) { closeModal(); loadData(); }
         }
-
-        async function deleteItem(type, id) {
-            if (!confirm("Yakin ingin menghapus data ini?")) return;
-            try {
-                const res = await fetch(`${API_URL}/${type}/${id}`, { method: 'DELETE' });
-                if (res.ok) await loadData();
-            } catch (err) { alert("Gagal menghapus!"); }
-        }
-
-        function closeModal() { document.getElementById('app-modal').style.display = 'none'; }
-        function toggleApiSettings() {
-            const panel = document.getElementById('api-panel');
-            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        }
-        function saveApiUrl() {
-            const url = document.getElementById('api-url-input').value;
-            localStorage.setItem('api_url', url);
-            location.reload();
-        }
+        async function deleteItem(type, id) { if (confirm("Hapus?")) { await fetch(`${API_URL}/${type}/${id}`, { method: 'DELETE' }); loadData(); } }
+        function toggleApiSettings() { const p = document.getElementById('api-panel'); p.style.display = p.style.display === 'none' ? 'block' : 'none'; }
+        function saveApiUrl() { localStorage.setItem('api_url', document.getElementById('api-url-input').value); location.reload(); }
     </script>
 </body>
 </html>
