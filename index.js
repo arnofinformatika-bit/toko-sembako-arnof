@@ -18,6 +18,11 @@ app.use('/kategori', KategoriRoute)
 app.use('/barang', BarangRoute)
 app.use('/transaksi', TransaksiRoute)
 
-app.listen(3000, () => {
-    console.log('Server started')
-})
+// Port listening for local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(3000, () => {
+        console.log('Server started on port 3000')
+    })
+}
+
+export default app

@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "name": "toko-sembako-arnof",
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/user/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/barang/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/kategori/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/transaksi/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1",
+      "check": true
+    }
+  ]
+}
