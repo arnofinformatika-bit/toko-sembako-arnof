@@ -447,19 +447,21 @@ tbody tr:hover {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 2rem 1rem;
+  overflow-y: auto;
 }
 
 .modal-content {
   background: var(--white);
   width: 100%;
   max-width: 500px;
-  max-height: 90vh;
+  max-height: calc(100vh - 4rem);
   overflow-y: auto;
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   animation: slideUp 0.4s ease;
+  margin: auto; /* Ensures it centers when possible but stays accessible when tall */
 }
 
 @media (max-width: 480px) {
@@ -472,7 +474,7 @@ tbody tr:hover {
   background: var(--white);
   width: 100%;
   max-width: 420px;
-  max-height: 85vh;
+  max-height: calc(100vh - 4rem);
   overflow-y: auto;
   border-radius: var(--radius-lg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -480,6 +482,7 @@ tbody tr:hover {
   font-family: 'Courier New', Courier, monospace;
   color: #1a1a1a;
   position: relative;
+  margin: auto;
 }
 
 /* Custom Scrollbar for Receipt */
