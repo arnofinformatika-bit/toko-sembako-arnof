@@ -437,35 +437,32 @@ tbody tr:hover {
 /* Modal & Receipt */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 9999;
-  overflow-y: auto;
-  display: block; /* Use block and absolute centering for children */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Start from top to allow scrolling */
+  padding: 4rem 1rem;
+  overflow-y: auto; /* Enable scroll on the overlay itself */
 }
 
 .modal-content {
   background: var(--white);
   width: 95%;
   max-width: 500px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   border-radius: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   padding: 2.5rem;
+  margin-bottom: 2rem; /* Extra space at bottom */
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes modalPop {
-  from { transform: translate(-50%, -40%) scale(0.9); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
 @media (max-width: 480px) {
@@ -478,15 +475,12 @@ tbody tr:hover {
   background: var(--white);
   width: 95%;
   max-width: 420px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   border-radius: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   padding: 2.5rem;
   font-family: 'Courier New', Courier, monospace;
   color: #1a1a1a;
+  margin-bottom: 2rem;
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
