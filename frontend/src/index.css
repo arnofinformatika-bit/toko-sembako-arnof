@@ -438,30 +438,31 @@ tbody tr:hover {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 9999;
+  overflow-y: auto;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Start from top to allow scrolling */
-  padding: 4rem 1rem;
-  overflow-y: auto; /* Enable scroll on the overlay itself */
+  align-items: center; /* Initial center */
+  padding: 3rem 1rem; /* Padding for "outside" scrolling space */
 }
 
 .modal-content {
   background: var(--white);
   width: 95%;
   max-width: 500px;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
   padding: 2.5rem;
-  margin-bottom: 2rem; /* Extra space at bottom */
+  margin: auto; /* This handles centering AND outside scrolling in flex containers */
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0; /* Prevent it from shrinking */
 }
 
 @keyframes modalPop {
-  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  from { transform: scale(0.95) translateY(30px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
@@ -475,13 +476,14 @@ tbody tr:hover {
   background: var(--white);
   width: 95%;
   max-width: 420px;
-  border-radius: 24px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 28px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
   padding: 2.5rem;
   font-family: 'Courier New', Courier, monospace;
   color: #1a1a1a;
-  margin-bottom: 2rem;
+  margin: auto;
   animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
 }
 
 /* Custom Scrollbar for Receipt */
