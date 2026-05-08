@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 import { fetchAPI } from '../utils/api';
+import Notification from '../components/Notification';
 
 function Kategori() {
   const [kategoriList, setKategoriList] = useState([]);
@@ -9,6 +10,7 @@ function Kategori() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     loadKategori();
@@ -42,9 +44,10 @@ function Kategori() {
       setShowModal(false);
       resetForm();
       loadKategori();
+      setNotification({ message: `Kategori berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`, type: 'success' });
     } catch (error) {
       console.error("Gagal menyimpan kategori", error);
-      alert("Terjadi kesalahan");
+      setNotification({ message: error.message || "Terjadi kesalahan", type: 'error' });
     }
   };
 
@@ -60,9 +63,10 @@ function Kategori() {
       try {
         await fetchAPI(`/kategori/${id}`, { method: 'DELETE' });
         loadKategori();
+        setNotification({ message: "Kategori berhasil dihapus", type: 'success' });
       } catch (error) {
         console.error("Gagal menghapus kategori", error);
-        alert("Gagal menghapus. Pastikan tidak ada barang yang terkait.");
+        setNotification({ message: "Gagal menghapus. Pastikan tidak ada barang yang terkait.", type: 'error' });
       }
     }
   };
@@ -75,6 +79,13 @@ function Kategori() {
 
   return (
     <div className="animate-slide-up">
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type} 
+          onClose={() => setNotification(null)} 
+        />
+      )}
       <div className="page-header">
         <h1 className="page-title">Manajemen Kategori</h1>
         <button className="btn btn-primary" onClick={() => { resetForm(); setShowModal(true); }}>

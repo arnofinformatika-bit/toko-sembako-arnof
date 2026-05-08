@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, Trash2, CheckCircle, Printer, X } from 'lucide-react';
 import { fetchAPI } from '../utils/api';
+import Notification from '../components/Notification';
 
 function Transaksi() {
   const [barangList, setBarangList] = useState([]);
@@ -8,6 +9,7 @@ function Transaksi() {
   const [loading, setLoading] = useState(true);
   const [showReceipt, setShowReceipt] = useState(false);
   const [receiptData, setReceiptData] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     loadBarang();
@@ -30,7 +32,7 @@ function Transaksi() {
 
   const addToCart = (barang) => {
     if (barang.stok <= 0) {
-      alert("Stok barang habis!");
+      setNotification({ message: "Stok barang habis!", type: 'error' });
       return;
     }
     
@@ -38,7 +40,7 @@ function Transaksi() {
       const existing = prev.find(item => item.id === barang.id);
       if (existing) {
         if (existing.qty >= barang.stok) {
-          alert("Melebihi stok yang tersedia");
+          setNotification({ message: "Melebihi stok yang tersedia", type: 'error' });
           return prev;
         }
         return prev.map(item => item.id === barang.id ? { ...item, qty: item.qty + 1 } : item);
@@ -99,9 +101,10 @@ function Transaksi() {
       setShowReceipt(true);
       setCart([]);
       loadBarang(); // Refresh stok
+      setNotification({ message: "Transaksi berhasil diproses", type: 'success' });
     } catch (error) {
       console.error("Gagal transaksi", error);
-      alert("Transaksi gagal: " + error.message);
+      setNotification({ message: "Transaksi gagal: " + error.message, type: 'error' });
     }
   };
 
@@ -116,6 +119,13 @@ function Transaksi() {
 
   return (
     <div className="animate-slide-up transaction-layout">
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type} 
+          onClose={() => setNotification(null)} 
+        />
+      )}
       {/* Katalog Barang */}
       <div className="transaction-catalog">
         <div className="page-header">

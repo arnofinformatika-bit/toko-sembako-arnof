@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 import { fetchAPI } from '../utils/api';
+import Notification from '../components/Notification';
 
 function Barang() {
   const [barangList, setBarangList] = useState([]);
@@ -9,6 +10,7 @@ function Barang() {
   const [showModal, setShowModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [notification, setNotification] = useState(null);
   
   const [formData, setFormData] = useState({
     nama_barang: '',
@@ -64,9 +66,10 @@ function Barang() {
       setShowModal(false);
       resetForm();
       loadData();
+      setNotification({ message: `Barang berhasil ${isEditing ? 'diperbarui' : 'ditambahkan'}`, type: 'success' });
     } catch (error) {
       console.error("Gagal menyimpan barang", error);
-      alert("Terjadi kesalahan");
+      setNotification({ message: error.message || "Terjadi kesalahan", type: 'error' });
     }
   };
 
@@ -87,9 +90,10 @@ function Barang() {
       try {
         await fetchAPI(`/barang/${id}`, { method: 'DELETE' });
         loadData();
+        setNotification({ message: "Barang berhasil dihapus", type: 'success' });
       } catch (error) {
         console.error("Gagal menghapus barang", error);
-        alert("Gagal menghapus. Data mungkin terkait dengan transaksi.");
+        setNotification({ message: error.message || "Gagal menghapus barang", type: 'error' });
       }
     }
   };
@@ -102,6 +106,13 @@ function Barang() {
 
   return (
     <div className="animate-slide-up">
+      {notification && (
+        <Notification 
+          message={notification.message} 
+          type={notification.type} 
+          onClose={() => setNotification(null)} 
+        />
+      )}
       <div className="page-header">
         <h1 className="page-title">Manajemen Barang</h1>
         <button className="btn btn-primary" onClick={() => { resetForm(); setShowModal(true); }}>
