@@ -82,15 +82,6 @@ function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen, u
         >
           <ShoppingCart size={20} /> <span>Transaksi</span>
         </NavLink>
-        {isAdmin && (
-          <NavLink 
-            to="/user" 
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            onClick={() => setIsMobileOpen(false)}
-          >
-            <Users size={20} /> <span>Manajemen User</span>
-          </NavLink>
-        )}
       </nav>
 
       <div style={{ marginTop: 'auto' }}>
