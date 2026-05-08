@@ -13,10 +13,10 @@ import {
   Menu
 } from 'lucide-react';
 
-function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
+function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen, user: propUser }) {
   const navigate = useNavigate();
   const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
+  const user = propUser || (userString ? JSON.parse(userString) : null);
   const isAdmin = user && user.role === 'ADMIN';
 
   const handleLogout = () => {

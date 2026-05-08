@@ -8,22 +8,23 @@ import Transaksi from './pages/Transaksi';
 import { Menu } from 'lucide-react';
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      if (!mobile) setIsSidebarOpen(false);
+      if (!mobile) setIsMobileOpen(false);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const toggleMobileSidebar = () => {
+    setIsMobileOpen(!isMobileOpen);
   };
 
   // Mock user untuk keperluan sistem (id tetap 1 agar transaksi lancar)
@@ -34,21 +35,22 @@ function App() {
       <div className="app-container">
         {/* Mobile Toggle Button */}
         {isMobile && (
-          <button className="nav-toggle" onClick={toggleSidebar}>
+          <button className="nav-toggle" onClick={toggleMobileSidebar}>
             <Menu size={24} />
           </button>
         )}
 
         {/* Sidebar Overlay for Mobile */}
-        {isMobile && isSidebarOpen && (
-          <div className="sidebar-overlay active" onClick={toggleSidebar}></div>
+        {isMobile && isMobileOpen && (
+          <div className="sidebar-overlay active" onClick={toggleMobileSidebar}></div>
         )}
 
         {/* Sidebar */}
         <Sidebar 
-          isOpen={isSidebarOpen} 
-          isMobile={isMobile} 
-          toggleSidebar={toggleSidebar}
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          isMobileOpen={isMobileOpen}
+          setIsMobileOpen={setIsMobileOpen}
           user={mockUser}
         />
 
