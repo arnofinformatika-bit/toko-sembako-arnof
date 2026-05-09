@@ -20,7 +20,7 @@ app.use('/api/barang', BarangRoute)
 app.use('/api/transaksi', TransaksiRoute)
 
 // Fallback untuk route yang tidak ditemukan
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
     res.status(404).json({ message: "API Route not found" })
 })
 

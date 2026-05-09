@@ -255,7 +255,7 @@ body {
 
 @media (max-width: 1024px) {
   .main-content {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 }
 
@@ -276,7 +276,7 @@ body {
 
   .main-content {
     margin-left: 0 !important;
-    padding: 5rem 1.5rem 2rem; /* Space for mobile header/toggle */
+    padding: 5rem 1rem 2rem; /* Space for mobile header/toggle */
   }
 
   .nav-toggle {
@@ -294,11 +294,36 @@ body {
   .page-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
   .page-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  /* Override inline styles for smaller screens */
+  .glass-panel {
+    padding: 1rem !important;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  th, td {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
 }
 
@@ -429,8 +454,46 @@ tbody tr:hover {
   }
 
   .transaction-cart {
-    order: -1; /* Show cart on top or move it? Usually cart on bottom or separate tab. Let's keep it visible. */
+    order: 2; /* Cart on bottom instead of top */
     min-width: 0;
+  }
+}
+
+/* Split Layout */
+.page-layout {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  transition: var(--transition);
+  position: relative;
+}
+
+.table-section {
+  flex: 1;
+  min-width: 0;
+  transition: var(--transition);
+}
+
+.form-section {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 2rem;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@media (max-width: 1024px) {
+  .page-layout {
+    flex-direction: column-reverse;
+  }
+  .form-section {
+    width: 100%;
+    position: static;
   }
 }
 
