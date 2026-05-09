@@ -3,8 +3,17 @@ import { Plus, Edit2, Trash2, Search, X } from 'lucide-react';
 import { fetchAPI } from '../utils/api';
 import Notification from '../components/Notification';
 
+const defaultKategori = [
+  { id: 1, nama_kategori: 'Bahan Pokok', deskripsi: 'Kategori Bahan Pokok' },
+  { id: 2, nama_kategori: 'Produk Susu & Olahannya', deskripsi: 'Kategori Produk Susu & Olahannya' },
+  { id: 3, nama_kategori: 'Bumbu Dapur & Bahan Pelengkap', deskripsi: 'Kategori Bumbu Dapur & Bahan Pelengkap' },
+  { id: 4, nama_kategori: 'Makanan Instan & Camilan', deskripsi: 'Kategori Makanan Instan & Camilan' },
+  { id: 5, nama_kategori: 'Minuman & Bubuk Minuman', deskripsi: 'Kategori Minuman & Bubuk Minuman' },
+  { id: 6, nama_kategori: 'Perlengkapan Kebersihan & Rumah Tangga (Non-Pangan)', deskripsi: 'Kategori Perlengkapan Kebersihan & Rumah Tangga (Non-Pangan)' }
+];
+
 function Kategori() {
-  const [kategoriList, setKategoriList] = useState([]);
+  const [kategoriList, setKategoriList] = useState(defaultKategori);
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({ nama_kategori: '', deskripsi: '' });
   const [isEditing, setIsEditing] = useState(false);
@@ -19,9 +28,11 @@ function Kategori() {
   const loadKategori = async () => {
     try {
       const data = await fetchAPI('/kategori');
-      setKategoriList(data.data || []);
+      if (data.data && data.data.length > 0) {
+        setKategoriList(data.data);
+      }
     } catch (error) {
-      console.error("Gagal memuat kategori", error);
+      console.error("Gagal memuat kategori, menggunakan data default", error);
     } finally {
       setLoading(false);
     }
