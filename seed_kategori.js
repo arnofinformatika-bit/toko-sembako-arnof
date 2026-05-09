@@ -1,7 +1,14 @@
 import { prisma } from './lib/prisma.js';
 
 async function main() {
-  const categories = ['Snack', 'Kebutuhan Dapur', 'Lainnya'];
+  const categories = [
+    'Bahan Pokok',
+    'Produk Susu & Olahannya',
+    'Bumbu Dapur & Bahan Pelengkap',
+    'Makanan Instan & Camilan',
+    'Minuman & Bubuk Minuman',
+    'Perlengkapan Kebersihan & Rumah Tangga (Non-Pangan)'
+  ];
   
   for (const cat of categories) {
     const existing = await prisma.kategori.findFirst({
